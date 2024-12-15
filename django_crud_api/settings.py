@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from decouple import config
 import dj_database_url
 
 from pathlib import Path
@@ -17,8 +17,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Default database configuration
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600)
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default='sqlite:///db.sqlite3'),  # Fallback to SQLite for local development
+        conn_max_age=600,                                                # Reuse connections for up to 10 minutes
+        ssl_require=True                                                 # Enforce SSL for production
+    )
 }
 
 # Quick-start development settings - unsuitable for production
